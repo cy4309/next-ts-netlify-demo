@@ -1,4 +1,42 @@
+"use client";
+
+import { FormEvent, useState } from "react";
+
 export default function Home() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError("");
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const payload = new URLSearchParams();
+    formData.forEach((value, key) => {
+      payload.append(key, String(value));
+    });
+
+    try {
+      const response = await fetch("/__forms.html", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: payload.toString(),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit form");
+      }
+
+      window.location.href = "/thank-you";
+    } catch {
+      setSubmitError("送出失敗，請稍後再試。");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <section className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col justify-center gap-8 py-10">
       <header className="space-y-2">
@@ -10,13 +48,11 @@ export default function Home() {
 
       <form
         name="contact-demo"
-        method="POST"
-        action="/thank-you"
-        data-netlify="true"
-        data-netlify-honeypot="bot-field"
+        onSubmit={handleSubmit}
         className="space-y-4 rounded-xl border border-gray-200 p-5"
       >
         <input type="hidden" name="form-name" value="contact-demo" />
+        <input type="hidden" name="subject" value="New contact form submission" />
         <p className="hidden">
           <label>
             不要填這個欄位：
@@ -55,10 +91,12 @@ export default function Home() {
 
         <button
           type="submit"
+          disabled={isSubmitting}
           className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
         >
-          送出到 Netlify Forms
+          {isSubmitting ? "送出中..." : "送出到 Netlify Forms"}
         </button>
+        {submitError ? <p className="text-sm text-red-600">{submitError}</p> : null}
       </form>
 
       <div className="rounded-xl border border-dashed border-gray-300 p-4 text-sm text-gray-700">
