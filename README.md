@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js + Netlify Form 練習專案
 
-## Getting Started
+這個專案用來練習：
 
-First, run the development server:
+- 在 Netlify 部署 Next.js App Router
+- 使用 Netlify Forms 接收表單資料
+- 設定基本 anti-spam（honeypot）
+- 建立可驗證的成功提交流程
+
+## 本地開發
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 已完成的練習內容
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- 首頁提供 `contact-demo` 表單（`POST` + `data-netlify="true"`）
+- 送出後導向 `/thank-you` 成功頁
+- 已加 `bot-field` honeypot 欄位
+- 已加 `netlify.toml` 並啟用 `@netlify/plugin-nextjs`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 部署到 Netlify（重點）
 
-## Learn More
+1. 把專案推到 GitHub
+2. 在 Netlify 建立新 Site 並連接該 repo
+3. Build command: `npm run build`
+4. Publish directory：留空（由 Next.js Netlify plugin 處理）
+5. 部署完成後打開網站首頁，提交一次表單
+6. 到 Netlify 後台 `Forms` 應可看到 `contact-demo` 與提交紀錄
 
-To learn more about Next.js, take a look at the following resources:
+## 建議加練（下一步）
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- 開啟 Form notification（Email / Slack / Webhook）
+- 加 reCAPTCHA 或 hCaptcha
+- 建 Netlify Function 把表單資料寫入 Notion / Airtable
+- 設定環境變數與分支部署（Production / Preview）
+- 練習 `_redirects`、`_headers` 與快取策略
